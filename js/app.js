@@ -26,13 +26,54 @@ class App {
             'configuracoes': renderConfiguracoes
         };
         
-        this.init();
+        this.checkAuth();
+    }
+
+    checkAuth() {
+        const user = localStorage.getItem('businesshub_user');
+        if (user) {
+            document.getElementById('login-root').style.display = 'none';
+            document.getElementById('app-root').style.display = 'flex';
+            window.currentUser = JSON.parse(user);
+            this.init();
+        } else {
+            document.getElementById('login-root').style.display = 'flex';
+            document.getElementById('app-root').style.display = 'none';
+            this.setupLogin();
+        }
+    }
+
+    setupLogin() {
+        const form = document.getElementById('login-form');
+        const err = document.getElementById('login-error');
+        
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-password').value;
+            
+            const users = db.get('employees');
+            let user = users.find(u => (u.email === email || u.name === email) && u.password === pass);
+            
+            // Fallback for demo/admin
+            if (!user && email === 'admin@admin.com' && pass === 'admin') {
+                user = { id: 'admin-fallback', name: 'Administrador', role: 'Administrador', email: 'admin@admin.com' };
+            }
+            
+            if (user) {
+                localStorage.setItem('businesshub_user', JSON.stringify(user));
+                window.location.reload();
+            } else {
+                err.style.display = 'block';
+            }
+        });
     }
 
     init() {
         this.applyTheme();
         this.setupNavigation();
         this.updateHeader();
+        this.setupGlobalActions();
         
         // Listen to DB changes to update global UI parts if needed
         window.addEventListener('db-updated', () => this.updateHeader());
@@ -48,6 +89,109 @@ class App {
         }
     }
 
+    setupGlobalActions() {
+        // Logout
+        const btnLogout = document.getElementById('btn-logout');
+        if(btnLogout) {
+            btnLogout.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('businesshub_user');
+                window.location.reload();
+            });
+        }
+
+        // Theme Toggle
+        const btnTheme = document.getElementById('btn-theme-toggle');
+        if(btnTheme) {
+            btnTheme.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const target = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', target);
+                
+                const settings = db.getSettings();
+                settings.theme = target;
+                db.saveSettings(settings);
+            });
+        }
+
+        // Global Search
+        const searchModal = document.getElementById('modal-global-search');
+        const searchInput = document.getElementById('global-search-input');
+        const searchTrigger = document.getElementById('global-search-trigger');
+        
+        if(searchTrigger && searchModal && searchInput) {
+            searchTrigger.addEventListener('click', () => {
+                searchModal.style.display = 'flex';
+                setTimeout(() => searchInput.focus(), 100);
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'k') {
+                    e.preventDefault();
+                    searchModal.style.display = 'flex';
+                    setTimeout(() => searchInput.focus(), 100);
+                }
+                if (e.key === 'Escape') {
+                    searchModal.style.display = 'none';
+                }
+            });
+
+            searchModal.addEventListener('click', (e) => {
+                if(e.target === searchModal) searchModal.style.display = 'none';
+            });
+
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const results = document.getElementById('global-search-results');
+                if (query.length < 2) {
+                    results.innerHTML = '<p class="text-muted" style="text-align: center; padding: 2rem 0;">Comece a digitar para buscar...</p>';
+                    return;
+                }
+
+                let html = '';
+                // Search products
+                const products = db.get('products').filter(p => p.name.toLowerCase().includes(query) || p.sku.toLowerCase().includes(query));
+                if(products.length > 0) {
+                    html += '<h4 style="margin-bottom: 0.5rem; color: var(--primary);">Produtos</h4>';
+                    products.forEach(p => {
+                        html += `<div style="padding: 0.5rem; border-bottom: 1px solid var(--border-color); cursor: pointer;" onclick="window.location.hash='estoque'; document.getElementById('modal-global-search').style.display='none';">${p.name} (SKU: ${p.sku}) - Estoque: ${p.stock}</div>`;
+                    });
+                }
+
+                // Search clients
+                const clients = db.get('clients').filter(c => c.name.toLowerCase().includes(query) || c.doc.includes(query));
+                if(clients.length > 0) {
+                    html += '<h4 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--primary);">Clientes</h4>';
+                    clients.forEach(c => {
+                        html += `<div style="padding: 0.5rem; border-bottom: 1px solid var(--border-color); cursor: pointer;" onclick="window.location.hash='clientes'; document.getElementById('modal-global-search').style.display='none';">${c.name} (${c.doc})</div>`;
+                    });
+                }
+
+                if(html === '') {
+                    html = '<p class="text-muted" style="text-align: center; padding: 2rem 0;">Nenhum resultado encontrado.</p>';
+                }
+                results.innerHTML = html;
+            });
+        }
+
+        // Notifications
+        const btnNotif = document.getElementById('btn-notifications');
+        const modalNotif = document.getElementById('modal-notifications');
+        if(btnNotif && modalNotif) {
+            btnNotif.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isHidden = window.getComputedStyle(modalNotif).display === 'none' || modalNotif.style.display === 'none';
+                modalNotif.style.display = isHidden ? 'flex' : 'none';
+            });
+
+            modalNotif.addEventListener('click', (e) => {
+                if(e.target === modalNotif) {
+                    modalNotif.style.display = 'none';
+                }
+            });
+        }
+    }
+
     applyTheme() {
         const theme = db.getSettings().theme || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
@@ -57,6 +201,45 @@ class App {
         const settings = db.getSettings();
         const headerName = document.getElementById('header-company-name');
         if (headerName) headerName.textContent = settings.companyName;
+        
+        if (window.currentUser) {
+            const userName = document.getElementById('header-user-name');
+            const userAvatar = document.getElementById('header-user-avatar');
+            if(userName) userName.textContent = window.currentUser.name;
+            if(userAvatar) {
+                const initials = window.currentUser.name.substring(0, 1).toUpperCase();
+                userAvatar.src = `https://ui-avatars.com/api/?name=${initials}&background=3B82F6&color=fff&rounded=true&bold=true`;
+            }
+        }
+
+        // Update notifications
+        const products = db.get('products');
+        const lowStock = products.filter(p => p.stock <= p.minStock);
+        
+        const badge = document.getElementById('notification-badge');
+        const list = document.getElementById('notifications-list');
+        
+        if (badge && list) {
+            if (lowStock.length > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = lowStock.length;
+                
+                let html = '';
+                lowStock.forEach(p => {
+                    html += `
+                        <div style="padding: 1rem; background: var(--bg-body); border-radius: var(--radius-md); border-left: 3px solid var(--warning);">
+                            <strong>Estoque Baixo</strong>
+                            <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: var(--text-secondary);">${p.name} (Restam: ${p.stock})</p>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html;
+            } else {
+                badge.style.display = 'none';
+                list.innerHTML = '<p class="text-muted" style="text-align:center; padding: 2rem 0;">Sem notificações no momento.</p>';
+            }
+        }
+
         this.applyTheme();
     }
 

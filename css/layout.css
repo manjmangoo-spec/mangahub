@@ -1,4 +1,42 @@
 /* css/layout.css */
+/* Login Wrapper */
+.login-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    background: radial-gradient(circle at center, var(--bg-card) 0%, var(--bg-base) 100%);
+    position: fixed;
+    top: 0; left: 0; z-index: 9999;
+}
+.login-box {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 3rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 420px;
+    animation: fadeIn 0.5s ease-out;
+}
+.login-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+.login-header .logo-icon {
+    font-size: 3rem;
+    background: linear-gradient(135deg, var(--primary), var(--info));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+}
+.login-header h2 { margin: 0 0 0.5rem 0; font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
+.login-header p { color: var(--text-secondary); font-size: 0.95rem; margin: 0; }
+
+
 .app-container {
     display: flex;
     height: 100vh;
@@ -219,6 +257,7 @@
 .user-name {
     font-weight: 600;
     font-size: 0.9rem;
+    color: var(--text-primary);
 }
 
 .user-role {

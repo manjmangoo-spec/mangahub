@@ -126,6 +126,8 @@ function renderRelatorioVendas() {
         }
 
         const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#3B82F6';
+        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() || '#94A3B8';
+        const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border-light').trim() || 'rgba(255,255,255,0.05)';
         
         if(window.currentRelatorioChart) window.currentRelatorioChart.destroy();
         window.currentRelatorioChart = new Chart(ctx, {
@@ -136,7 +138,8 @@ function renderRelatorioVendas() {
                     label: 'Faturamento Diário',
                     data: data,
                     backgroundColor: primaryColor,
-                    borderRadius: 4
+                    borderRadius: 4,
+                    maxBarThickness: 40
                 }]
             },
             options: {
@@ -146,8 +149,8 @@ function renderRelatorioVendas() {
                     legend: { display: false }
                 },
                 scales: {
-                    x: { grid: { display: false, drawBorder: false } },
-                    y: { grid: { color: 'rgba(255,255,255,0.05)' } }
+                    x: { grid: { display: false, drawBorder: false }, ticks: { color: textColor } },
+                    y: { grid: { color: gridColor }, ticks: { color: textColor } }
                 }
             }
         });
@@ -219,6 +222,7 @@ function renderRelatorioProdutos() {
         }
 
         const successColor = getComputedStyle(document.documentElement).getPropertyValue('--success').trim() || '#22C55E';
+        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() || '#94A3B8';
         
         if(window.currentRelatorioChart) window.currentRelatorioChart.destroy();
         window.currentRelatorioChart = new Chart(ctx, {
@@ -241,7 +245,7 @@ function renderRelatorioProdutos() {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { position: 'right', labels: { color: '#94A3B8' } }
+                    legend: { position: 'right', labels: { color: textColor } }
                 },
                 cutout: '70%'
             }

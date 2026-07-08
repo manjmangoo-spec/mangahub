@@ -372,13 +372,103 @@ function openCheckoutModal() {
         db.updateCaixa(caixa);
 
         UI.closeModal();
-        UI.showToast('Venda finalizada com sucesso!', 'success');
         
-        // Reset
+        // Reset Cart UI
         currentCart = [];
         cartDiscount = 0;
         document.getElementById('pdv-discount').value = '0';
         updateCartUI();
         updatePDVUI();
+        
+        // Show Print Modal
+        const printModal = document.getElementById('modal-print');
+        if (printModal) {
+            printModal.style.display = 'flex';
+            
+            // Set up print button
+            const btnPrint = document.getElementById('btn-print-receipt');
+            // Remove old listeners to avoid multiple triggers
+            const newBtn = btnPrint.cloneNode(true);
+            btnPrint.parentNode.replaceChild(newBtn, btnPrint);
+            
+            newBtn.addEventListener('click', () => {
+                printReceipt(sale);
+                printModal.style.display = 'none';
+                UI.showToast('Imprimindo comprovante...', 'success');
+            });
+        } else {
+            UI.showToast('Venda finalizada com sucesso!', 'success');
+        }
     };
+}
+
+function printReceipt(sale) {
+    const settings = db.getSettings();
+    let html = `
+        <html>
+        <head>
+            <title>Comprovante de Venda</title>
+            <style>
+                body { font-family: 'Courier New', Courier, monospace; font-size: 12px; margin: 0; padding: 20px; width: 300px; }
+                .center { text-align: center; }
+                .line { border-bottom: 1px dashed #000; margin: 10px 0; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { text-align: left; padding: 2px 0; }
+                .right { text-align: right; }
+            </style>
+        </head>
+        <body>
+            <div class="center">
+                <h2>${settings.companyName}</h2>
+                <p>Comprovante de Venda</p>
+                <p>${new Date(sale.date).toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="line"></div>
+            <table>
+                <tr>
+                    <th>Qtd</th>
+                    <th>Item</th>
+                    <th class="right">Total</th>
+                </tr>
+    `;
+    
+    sale.items.forEach(item => {
+        html += `
+            <tr>
+                <td>${item.qty}x</td>
+                <td>${item.name}</td>
+                <td class="right">${formatMoney(item.qty * item.price)}</td>
+            </tr>
+        `;
+    });
+    
+    html += `
+            </table>
+            <div class="line"></div>
+            <table>
+                <tr><td>Subtotal:</td><td class="right">${formatMoney(sale.subtotal)}</td></tr>
+                <tr><td>Desconto:</td><td class="right">${formatMoney(sale.discount)}</td></tr>
+                <tr><th>TOTAL:</th><th class="right">${formatMoney(sale.total)}</th></tr>
+                <tr><td>Pgto:</td><td class="right">${sale.payment}</td></tr>
+            </table>
+            <div class="line"></div>
+            <div class="center">
+                <p>Obrigado pela preferência!</p>
+            </div>
+        </body>
+        </html>
+    `;
+    
+    const win = window.open('', '_blank');
+    if(win) {
+        win.document.write(html);
+        win.document.close();
+        win.focus();
+        setTimeout(() => {
+            win.print();
+            win.close();
+        }, 500);
+    } else {
+        alert("Pop-ups bloqueados. Impossível imprimir.");
+    }
 }

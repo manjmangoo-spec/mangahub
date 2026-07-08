@@ -17,7 +17,7 @@ const defaultData = {
         { id: generateId(), name: 'Distribuidora Tech', doc: '98.765.432/0001-10', phone: '(11) 88888-8888', email: 'vendas@disttech.com', address: 'Rua das Indústrias, 500' }
     ],
     employees: [
-        { id: generateId(), name: 'Carlos Eduardo', role: 'Gerente Comercial', doc: '111.222.333-44', phone: '(11) 97777-7777', email: 'carlos@businesshub.com' }
+        { id: generateId(), name: 'Administrador', role: 'Administrador', doc: '000.000.000-00', phone: '', email: 'admin@admin.com', password: 'admin' }
     ],
     sales: [],
     caixa: { 
