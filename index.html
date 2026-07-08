@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BusinessHub - Gestão Empresarial Premium</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CSS Principal -->
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span class="logo-text">BusinessHub</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-route="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i><span class="nav-text">Dashboard</span>
+                </a>
+                <a href="#pdv" class="nav-item" data-route="pdv">
+                    <i class="fa-solid fa-cash-register"></i><span class="nav-text">Frente de Caixa (PDV)</span>
+                </a>
+                <a href="#caixa" class="nav-item" data-route="caixa">
+                    <i class="fa-solid fa-wallet"></i><span class="nav-text">Controle de Caixa</span>
+                </a>
+                <a href="#estoque" class="nav-item" data-route="estoque">
+                    <i class="fa-solid fa-box-open"></i><span class="nav-text">Estoque & Produtos</span>
+                </a>
+                <a href="#clientes" class="nav-item" data-route="clientes">
+                    <i class="fa-solid fa-users"></i><span class="nav-text">Clientes</span>
+                </a>
+                <a href="#fornecedores" class="nav-item" data-route="fornecedores">
+                    <i class="fa-solid fa-truck"></i><span class="nav-text">Fornecedores</span>
+                </a>
+                <a href="#funcionarios" class="nav-item" data-route="funcionarios">
+                    <i class="fa-solid fa-user-tie"></i><span class="nav-text">Funcionários</span>
+                </a>
+                <a href="#relatorios" class="nav-item" data-route="relatorios">
+                    <i class="fa-solid fa-chart-line"></i><span class="nav-text">Relatórios</span>
+                </a>
+                <a href="#configuracoes" class="nav-item" data-route="configuracoes">
+                    <i class="fa-solid fa-gear"></i><span class="nav-text">Configurações</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="nav-item danger" onclick="alert('Sistema de login será implementado na versão final.')">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i><span class="nav-text">Sair do Sistema</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="topbar">
+                <div style="display:flex; align-items:center; gap: 1rem;">
+                    <button class="topbar-btn" id="toggleSidebar"><i class="fa-solid fa-bars"></i></button>
+                    <div class="search-bar">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" placeholder="Pesquisar em todo o sistema...">
+                        <span class="shortcut">Ctrl+K</span>
+                    </div>
+                </div>
+                
+                <div class="topbar-right">
+                    <button class="topbar-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    
+                    <div class="user-profile">
+                        <div class="user-info">
+                            <span class="user-name">Administrador</span>
+                            <span class="user-role" id="header-company-name">BusinessHub Inc.</span>
+                        </div>
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=3B82F6&color=fff&rounded=true&bold=true" alt="User" class="avatar">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Views Container -->
+            <div class="content-area" id="app-content">
+                <!-- Views will be injected here by JS Router -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Global Containers for UI Elements -->
+    <div id="modal-container"></div>
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts (Modular ES6) -->
+    <script type="module" src="/js/app.js"></script>
+    <script>
+        // Handle mobile sidebar toggle inline to ensure it works immediately
+        document.getElementById('toggleSidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        });
+        // Show toggle button on mobile
+        if(window.innerWidth <= 768) {
+            document.getElementById('toggleSidebar').style.display = 'block';
+        }
+        window.addEventListener('resize', () => {
+            if(window.innerWidth <= 768) {
+                document.getElementById('toggleSidebar').style.display = 'block';
+            } else {
+                document.getElementById('toggleSidebar').style.display = 'none';
+                document.getElementById('sidebar').classList.remove('mobile-open');
+            }
+        });
+    </script>
+</body>
+</html>
