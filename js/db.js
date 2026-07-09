@@ -4,27 +4,14 @@ import { generateId } from './utils.js';
 const DB_KEY = 'businessHub_db_premium';
 
 const defaultData = {
-    products: [
-        { id: generateId(), code: '001', name: 'MacBook Pro M3 Max 36GB', category: 'Eletrônicos', supplier: 'Apple Br', cost: 15000, price: 22000, stock: 5, minStock: 2, image: '' },
-        { id: generateId(), code: '002', name: 'Cadeira Ergonômica Elements', category: 'Móveis', supplier: 'Elements', cost: 850, price: 1599, stock: 12, minStock: 5, image: '' },
-        { id: generateId(), code: '003', name: 'Mouse Logitech MX Master 3S', category: 'Acessórios', supplier: 'Logitech', cost: 350, price: 650, stock: 3, minStock: 5, image: '' },
-        { id: generateId(), code: '004', name: 'Monitor Dell UltraSharp 27"', category: 'Eletrônicos', supplier: 'Dell', cost: 1800, price: 2900, stock: 8, minStock: 3, image: '' }
-    ],
-    customers: [
-        { id: generateId(), name: 'Empresa Alpha Ltda', doc: '12.345.678/0001-90', phone: '(11) 99999-9999', email: 'contato@alpha.com', address: 'Av Paulista, 1000' }
-    ],
-    suppliers: [
-        { id: generateId(), name: 'Distribuidora Tech', doc: '98.765.432/0001-10', phone: '(11) 88888-8888', email: 'vendas@disttech.com', address: 'Rua das Indústrias, 500' }
-    ],
+    products: [],
+    customers: [],
+    suppliers: [],
     employees: [
         { id: generateId(), name: 'Administrador', role: 'Administrador', doc: '000.000.000-00', phone: '', email: 'admin@admin.com', password: 'admin' }
     ],
     sales: [],
-    services: [
-        { id: generateId(), code: "S001", name: "Serviço de Manutenção", category: "Manutenção", duration: 60, price: 150 },
-        { id: generateId(), code: "S002", name: "Consultoria Especializada", category: "Consultoria", duration: 120, price: 300 },
-        { id: generateId(), code: "S003", name: "Atendimento Padrão", category: "Geral", duration: 30, price: 50 }
-    ],
+    services: [],
     appointments: [],
     caixa: { 
         status: 'fechado', // 'aberto' | 'fechado'
