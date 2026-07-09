@@ -521,3 +521,25 @@ select.input {
     background-color: var(--bg-card-hover);
     transform: scale(1.01);
 }
+
+@media (max-width: 768px) {
+    .content-area {
+        padding-bottom: 80px !important;
+    }
+}
+
+/* Custom Alert Card */
+.stock-alert-card {
+    border: 1px solid var(--danger);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+    background: linear-gradient(180deg, rgba(239, 68, 68, 0.05) 0%, transparent 40%), var(--bg-card);
+    position: relative;
+    overflow: hidden;
+}
+.stock-alert-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--danger), #fca5a5);
+}

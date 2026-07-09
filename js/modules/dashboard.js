@@ -119,9 +119,9 @@ export const renderDashboard = () => {
 
             <!-- Coluna Secundária -->
             <div style="display:flex; flex-direction:column; gap:1.5rem;">
-                <div class="card">
+                <div class="card stock-alert-card">
                     <div class="card-header">
-                        <h3 class="card-title">Atenção: Estoque Baixo</h3>
+                        <h3 class="card-title" style="color: var(--danger);"><i class="fa-solid fa-triangle-exclamation" style="margin-right: 0.5rem;"></i>Atenção: Estoque Baixo</h3>
                         <span class="badge" style="position:relative; width:auto; padding:2px 8px;">${lowStock.length}</span>
                     </div>
                     ${lowStock.length > 0 ? `

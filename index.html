@@ -178,10 +178,6 @@
     <!-- Scripts (Modular ES6) -->
     <script type="module" src="/js/app.js"></script>
     <script>
-        // Handle mobile sidebar toggle inline to ensure it works immediately
-        document.getElementById('toggleSidebar').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('mobile-open');
-        });
         // Show toggle button on mobile
         if(window.innerWidth <= 768) {
             document.getElementById('toggleSidebar').style.display = 'block';
