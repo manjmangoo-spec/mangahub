@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BusinessHub - Gestão Empresarial Premium</title>
+    <title>Central de Negócios - Gestão Empresarial Premium</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
@@ -17,7 +21,7 @@
         <div class="login-box">
             <div class="login-header">
                 <i class="fa-solid fa-layer-group logo-icon"></i>
-                <h2>BusinessHub</h2>
+                <h2>Central de Negócios</h2>
                 <p>Faça login para continuar</p>
             </div>
             <form id="login-form">
@@ -42,7 +46,7 @@
             <div class="sidebar-header">
                 <div class="logo">
                     <i class="fa-solid fa-layer-group"></i>
-                    <span class="logo-text">BusinessHub</span>
+                    <span class="logo-text">Central de Negócios</span>
                 </div>
             </div>
             
@@ -55,6 +59,12 @@
                 </a>
                 <a href="#caixa" class="nav-item" data-route="caixa">
                     <i class="fa-solid fa-wallet"></i><span class="nav-text">Controle de Caixa</span>
+                </a>
+                <a href="#agendamentos" class="nav-item" data-route="agendamentos">
+                    <i class="fa-regular fa-calendar-check"></i><span class="nav-text">Agenda & Marcações</span>
+                </a>
+                <a href="#servicos" class="nav-item" data-route="servicos">
+                    <i class="fa-solid fa-scissors"></i><span class="nav-text">Serviços</span>
                 </a>
                 <a href="#estoque" class="nav-item" data-route="estoque">
                     <i class="fa-solid fa-box-open"></i><span class="nav-text">Estoque & Produtos</span>
@@ -126,6 +136,10 @@
     <div id="modal-container"></div>
     <div id="toast-container" class="toast-container"></div>
 
+    <!-- Mobile FAB -->
+    <div class="mobile-fab" onclick="UI.showStaticModal('modal-global-search'); setTimeout(() => document.getElementById('global-search-input').focus(), 100);">
+        <i class="fa-solid fa-search"></i>
+    </div>
     <!-- Modals -->
     <div id="modal-global-search" class="modal-overlay" style="display: none; z-index: 10000;">
         <div class="modal-content" style="max-width: 600px; padding: 0;">
@@ -139,15 +153,13 @@
         </div>
     </div>
 
-    <div id="modal-notifications" class="modal-overlay" style="display: none; align-items: flex-start; justify-content: flex-end; padding: 1rem; z-index: 9999; background: rgba(0,0,0,0.2);">
-        <div class="modal-content" style="max-width: 350px; width: 100%; margin-top: 60px; margin-right: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl);">
-            <div class="modal-header">
-                <h3 style="font-size: 1.1rem; margin:0;">Notificações</h3>
-                <button class="btn-icon" onclick="document.getElementById('modal-notifications').style.display='none'"><i class="fa-solid fa-times"></i></button>
-            </div>
-            <div id="notifications-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height: 300px; overflow-y: auto; padding-top: 1rem;">
-                <!-- Filled via JS -->
-            </div>
+    <div id="modal-notifications" class="dropdown-popup" style="display: none;">
+        <div class="dropdown-header">
+            <h3>Notificações</h3>
+            <button class="btn-icon" onclick="document.getElementById('modal-notifications').style.display='none'"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div id="notifications-list" class="dropdown-list">
+            <!-- Filled via JS -->
         </div>
     </div>
 

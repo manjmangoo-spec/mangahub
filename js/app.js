@@ -10,6 +10,8 @@ import { renderCaixa } from './modules/caixa.js';
 import { renderClientes, renderFornecedores, renderFuncionarios } from './modules/pessoas.js';
 import { renderRelatorios } from './modules/relatorios.js';
 import { renderConfiguracoes } from './modules/configuracoes.js';
+import { renderServicos } from './modules/servicos.js';
+import { renderAgendamentos } from './modules/agendamentos.js';
 
 class App {
     constructor() {
@@ -24,13 +26,15 @@ class App {
             'funcionarios': renderFuncionarios,
             'relatorios': renderRelatorios,
             'configuracoes': renderConfiguracoes
+            ,'servicos': renderServicos,
+            'agendamentos': renderAgendamentos
         };
         
         this.checkAuth();
     }
 
     checkAuth() {
-        const user = localStorage.getItem('businesshub_user');
+        const user = localStorage.getItem('cndhub_user');
         if (user) {
             document.getElementById('login-root').style.display = 'none';
             document.getElementById('app-root').style.display = 'flex';
@@ -61,7 +65,7 @@ class App {
             }
             
             if (user) {
-                localStorage.setItem('businesshub_user', JSON.stringify(user));
+                localStorage.setItem('cndhub_user', JSON.stringify(user));
                 window.location.reload();
             } else {
                 err.style.display = 'block';
@@ -82,6 +86,7 @@ class App {
         window.addEventListener('hashchange', () => this.handleRoute());
         
         // Initial route
+        setTimeout(() => UI.showToast('Bem-vindo(a) ao Nexus ERP!', 'success'), 1000);
         if (!window.location.hash) {
             window.location.hash = '#dashboard';
         } else {
@@ -95,7 +100,7 @@ class App {
         if(btnLogout) {
             btnLogout.addEventListener('click', (e) => {
                 e.preventDefault();
-                localStorage.removeItem('businesshub_user');
+                localStorage.removeItem('cndhub_user');
                 window.location.reload();
             });
         }
@@ -110,7 +115,7 @@ class App {
                 
                 const settings = db.getSettings();
                 settings.theme = target;
-                db.saveSettings(settings);
+                db.updateSettings(settings);
             });
         }
 
@@ -121,14 +126,14 @@ class App {
         
         if(searchTrigger && searchModal && searchInput) {
             searchTrigger.addEventListener('click', () => {
-                searchModal.style.display = 'flex';
+                UI.showStaticModal('modal-global-search');
                 setTimeout(() => searchInput.focus(), 100);
             });
 
             document.addEventListener('keydown', (e) => {
                 if (e.ctrlKey && e.key === 'k') {
                     e.preventDefault();
-                    searchModal.style.display = 'flex';
+                    UI.showStaticModal('modal-global-search');
                     setTimeout(() => searchInput.focus(), 100);
                 }
                 if (e.key === 'Escape') {
@@ -150,20 +155,20 @@ class App {
 
                 let html = '';
                 // Search products
-                const products = db.get('products').filter(p => p.name.toLowerCase().includes(query) || p.sku.toLowerCase().includes(query));
+                const products = db.get('products').filter(p =>  (p.name && p.name.toLowerCase()) .includes(query) || (p.code && p.code.toLowerCase().includes(query)));
                 if(products.length > 0) {
                     html += '<h4 style="margin-bottom: 0.5rem; color: var(--primary);">Produtos</h4>';
                     products.forEach(p => {
-                        html += `<div style="padding: 0.5rem; border-bottom: 1px solid var(--border-color); cursor: pointer;" onclick="window.location.hash='estoque'; document.getElementById('modal-global-search').style.display='none';">${p.name} (SKU: ${p.sku}) - Estoque: ${p.stock}</div>`;
+                        html += `<div style="padding: 0.5rem; border-bottom: 1px solid var(--border-color); cursor: pointer;" onclick="window.location.hash='estoque'; UI.hideStaticModal('modal-global-search');">${p.name} (SKU: ${p.sku}) - Estoque: ${p.stock}</div>`;
                     });
                 }
 
                 // Search clients
-                const clients = db.get('clients').filter(c => c.name.toLowerCase().includes(query) || c.doc.includes(query));
+                const clients = db.get('clients').filter(c =>  (c.name && c.name.toLowerCase()) .includes(query) || (c.doc && c.doc.includes(query)));
                 if(clients.length > 0) {
                     html += '<h4 style="margin-top: 1rem; margin-bottom: 0.5rem; color: var(--primary);">Clientes</h4>';
                     clients.forEach(c => {
-                        html += `<div style="padding: 0.5rem; border-bottom: 1px solid var(--border-color); cursor: pointer;" onclick="window.location.hash='clientes'; document.getElementById('modal-global-search').style.display='none';">${c.name} (${c.doc})</div>`;
+                        html += `<div style="padding: 0.5rem; border-bottom: 1px solid var(--border-color); cursor: pointer;" onclick="window.location.hash='clientes'; UI.hideStaticModal('modal-global-search');">${c.name} (${c.doc})</div>`;
                     });
                 }
 
@@ -180,12 +185,19 @@ class App {
         if(btnNotif && modalNotif) {
             btnNotif.addEventListener('click', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 const isHidden = window.getComputedStyle(modalNotif).display === 'none' || modalNotif.style.display === 'none';
                 modalNotif.style.display = isHidden ? 'flex' : 'none';
             });
 
             modalNotif.addEventListener('click', (e) => {
                 if(e.target === modalNotif) {
+                    modalNotif.style.display = 'none';
+                }
+            });
+            
+            document.addEventListener('click', (e) => {
+                if(modalNotif.style.display === 'flex' && !modalNotif.contains(e.target) && !btnNotif.contains(e.target)) {
                     modalNotif.style.display = 'none';
                 }
             });
@@ -227,9 +239,9 @@ class App {
                 let html = '';
                 lowStock.forEach(p => {
                     html += `
-                        <div style="padding: 1rem; background: var(--bg-body); border-radius: var(--radius-md); border-left: 3px solid var(--warning);">
-                            <strong>Estoque Baixo</strong>
-                            <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: var(--text-secondary);">${p.name} (Restam: ${p.stock})</p>
+                        <div style="padding: 1.25rem; background: var(--bg-card-hover); border-radius: var(--radius-md); border-left: 4px solid var(--warning); display: flex; flex-direction: column; gap: 0.5rem; transition: background 0.2s ease; cursor: pointer;" onmouseover="this.style.background='var(--border-color)';" onmouseout="this.style.background='var(--bg-card-hover)';">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary); font-weight: 600; font-size: 0.95rem;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--warning);"></i> Estoque Baixo</div>
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">${p.name} (Restam: ${p.stock})</p>
                         </div>
                     `;
                 });

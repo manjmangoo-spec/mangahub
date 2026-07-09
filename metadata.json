@@ -1,6 +1,6 @@
 {
-  "name": "BusinessHub",
-  "description": "Sistema ERP Premium e PDV",
+  "name": "Central de Negócios",
+  "description": "Central de Negócios - Sistema ERP Premium e PDV",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

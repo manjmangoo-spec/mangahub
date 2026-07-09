@@ -182,7 +182,7 @@ function updatePDVUI() {
 
     // Filter products
     const filtered = products.filter(p => {
-        const matchSearch = p.name.toLowerCase().includes(searchQuery) || p.code.includes(searchQuery);
+        const matchSearch =  (p.name && p.name.toLowerCase()) .includes(searchQuery) || (p.code && p.code.toLowerCase().includes(searchQuery));
         const matchCat = activeCategory === 'Todas' || p.category === activeCategory;
         return matchSearch && matchCat;
     });

@@ -152,7 +152,7 @@ function updatePessoasUI() {
     
     const isEmp = type === 'employees';
     
-    let filtered = db.get(type).filter(p => p.name.toLowerCase().includes(term) || (p.doc && p.doc.toLowerCase().includes(term)));
+    let filtered = db.get(type).filter(p =>  (p.name && p.name.toLowerCase()) .includes(term) || (p.doc && p.doc.toLowerCase().includes(term)));
 
     const tbody = document.getElementById('pes-table-body');
     if (tbody) {

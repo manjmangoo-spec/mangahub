@@ -20,13 +20,19 @@ const defaultData = {
         { id: generateId(), name: 'Administrador', role: 'Administrador', doc: '000.000.000-00', phone: '', email: 'admin@admin.com', password: 'admin' }
     ],
     sales: [],
+    services: [
+        { id: generateId(), code: "S001", name: "Serviço de Manutenção", category: "Manutenção", duration: 60, price: 150 },
+        { id: generateId(), code: "S002", name: "Consultoria Especializada", category: "Consultoria", duration: 120, price: 300 },
+        { id: generateId(), code: "S003", name: "Atendimento Padrão", category: "Geral", duration: 30, price: 50 }
+    ],
+    appointments: [],
     caixa: { 
         status: 'fechado', // 'aberto' | 'fechado'
         balance: 0,
         history: [] 
     },
     settings: { 
-        companyName: 'BusinessHub Inc.', 
+        companyName: 'Central de Negócios', 
         theme: 'dark' 
     }
 };

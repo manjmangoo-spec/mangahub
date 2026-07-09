@@ -191,7 +191,7 @@ function updateEstoqueUI() {
     const cat = document.getElementById('estoque-filter-cat')?.value || '';
     
     let filtered = db.get('products').filter(p => {
-        const matchTerm = p.name.toLowerCase().includes(term) || p.code.toLowerCase().includes(term);
+        const matchTerm =  (p.name && p.name.toLowerCase()) .includes(term) || (p.code && p.code.toLowerCase().includes(term));
         const matchCat = cat === '' || p.category === cat;
         return matchTerm && matchCat;
     });

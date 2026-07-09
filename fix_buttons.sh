@@ -1,0 +1,1 @@
+sed -i 's/.btn-outline { color: var(--text-primary);    background-color: transparent;    color: var(--text-secondary);    border-color: var(--border-color);}/.btn-outline {\n    background-color: transparent;\n    color: var(--text-primary);\n    border: 1px solid var(--text-muted);\n}/g' css/components.css

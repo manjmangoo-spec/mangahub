@@ -160,7 +160,7 @@ function renderTabDados() {
             <div style="flex: 1; min-width: 300px; padding: 1.5rem; background: var(--bg-card-hover); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
                 <h4>Restaurar Backup</h4>
                 <p class="text-muted" style="margin: 0.5rem 0 1.5rem; font-size: 0.85rem;">Selecione um arquivo .json previamente exportado para restaurar o sistema.</p>
-                <input type="file" id="import-file" class="input" accept=".json" style="margin-bottom: 1rem;">
+                <label class="custom-file-upload" style="display: block; margin-bottom: 1.5rem;"><input type="file" id="import-file" accept=".json" style="display: none;" onchange="document.getElementById('file-name-display').textContent = this.files[0] ? this.files[0].name : 'Nenhum arquivo selecionado'"><div class="file-upload-box" style="border: 2px dashed var(--border-color); border-radius: var(--radius-md); padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s ease; background: var(--bg-body);"><i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i><div style="font-weight: 500; font-size: 1rem; color: var(--text-primary); margin-bottom: 0.25rem;">Clique para selecionar arquivo</div><div id="file-name-display" style="font-size: 0.85rem; color: var(--text-muted);">Nenhum arquivo .json selecionado</div></div></label>
                 <button class="btn btn-secondary" onclick="window.importData()"><i class="fa-solid fa-upload"></i> Restaurar Dados</button>
             </div>
         </div>

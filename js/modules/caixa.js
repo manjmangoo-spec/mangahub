@@ -245,7 +245,7 @@ function updateCaixaUI() {
             if(h.type === 'entrada') totalIn += h.value;
             else totalOut += h.value;
         }
-        return h.desc.toLowerCase().includes(term);
+        return  (h.desc && h.desc.toLowerCase()) .includes(term);
     });
 
     const summaryIn = document.getElementById('caixa-res-in');

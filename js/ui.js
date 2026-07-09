@@ -99,3 +99,59 @@ export const UI = {
 };
 
 window.UI = UI; // Expose globally for inline event handlers if needed
+
+// Add global ripple effect for buttons
+document.addEventListener('mousedown', function(e) {
+    const target = e.target.closest('.btn');
+    if (!target) return;
+    
+    const rect = target.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const ripple = document.createElement('span');
+    ripple.style.position = 'absolute';
+    ripple.style.background = 'rgba(255, 255, 255, 0.3)';
+    ripple.style.borderRadius = '50%';
+    ripple.style.transform = 'translate(-50%, -50%) scale(0)';
+    ripple.style.animation = 'ripple 0.6s linear';
+    ripple.style.pointerEvents = 'none';
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    
+    // Ensure button has proper positioning and overflow
+    const currentPos = window.getComputedStyle(target).position;
+    if (currentPos === 'static') target.style.position = 'relative';
+    target.style.overflow = 'hidden';
+    
+    target.appendChild(ripple);
+    
+    setTimeout(() => {
+        ripple.remove();
+    }, 600);
+});
+
+    // Helper for static modals
+    UI.showStaticModal = function(id) {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.style.display = 'flex';
+        // force reflow
+        void el.offsetWidth;
+        el.classList.add('active');
+        
+        // Add click outside
+        if(!el.dataset.bound) {
+            el.addEventListener('click', (e) => {
+                if(e.target === el) UI.hideStaticModal(id);
+            });
+            el.dataset.bound = 'true';
+        }
+    };
+    
+    UI.hideStaticModal = function(id) {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.classList.remove('active');
+        setTimeout(() => el.style.display = 'none', 300);
+    };
